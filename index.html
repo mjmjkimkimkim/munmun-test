@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>여덟 개의 문 · 문문 시 유형 테스트</title>
+<meta name="description" content="당신은 어떤 문으로 시에 드나드나요? 아홉 번의 물음으로 찾는 나의 시 유형 — 문문">
+<meta property="og:title" content="여덟 개의 문 · 문문 시 유형 테스트">
+<meta property="og:description" content="당신은 어떤 문으로 시에 드나드나요? 아홉 번의 물음, 3분이면 충분해요.">
+<meta property="og:type" content="website">
+<!-- ▼ 배포 후 아래 두 줄의 주소를 실제 GitHub Pages 주소로 바꿔 주세요 -->
+<meta property="og:url" content="https://아이디.github.io/저장소명/">
+<meta property="og:image" content="https://아이디.github.io/저장소명/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Song+Myung&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --paper:#F1ECE1; --paper-deep:#E7DFCF; --card:#FBF8F1;
+    --ink:#232019; --ink-soft:#4A4438; --indigo:#35576C; --indigo-deep:#223D4C;
+    --mut:#8A8375; --mist:#C4D0D2; --line:#D8CFBE;
+    --disp:"Song Myung",serif; --serif:"Gowun Batang",serif;
+    --sans:"Pretendard","Pretendard Variable",-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.75;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;min-height:100dvh}
+  .wrap{max-width:560px;margin:0 auto;padding:0 24px}
+  button{font-family:var(--sans);cursor:pointer}
+  button:focus-visible,a:focus-visible{outline:2px solid var(--indigo);outline-offset:3px;border-radius:4px}
+
+  .screen{display:none;min-height:100dvh;flex-direction:column;justify-content:center;padding:56px 0}
+  .screen.on{display:flex}
+  @media(prefers-reduced-motion:no-preference){
+    .screen.on{animation:rise .7s ease both}
+    @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  }
+
+  .eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.3em;color:var(--indigo);text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:20px}
+  .eyebrow::before{content:"";width:24px;height:1px;background:var(--indigo)}
+
+  /* ---- 표지 ---- */
+  .cover-symbol{width:60px;height:60px;margin-bottom:36px}
+  h1.title{font-family:var(--disp);font-weight:400;font-size:clamp(2.5rem,10vw,3.6rem);line-height:1.22;letter-spacing:-.01em}
+  .cover .tagline{font-family:var(--serif);font-size:1.12rem;color:var(--ink-soft);margin-top:22px;max-width:34ch}
+  .cover .sub{margin-top:14px;color:var(--mut);font-size:.9rem}
+  .btn{display:inline-flex;align-items:center;justify-content:center;border-radius:100px;padding:15px 30px;font-size:.95rem;border:1px solid var(--ink);background:none;color:var(--ink);transition:opacity .2s}
+  .btn:hover{opacity:.75}
+  .btn.pri{background:var(--indigo);border-color:var(--indigo);color:#fff}
+  .cover .btn{margin-top:44px;align-self:flex-start}
+  .cover .meta{margin-top:60px;color:var(--mut);font-size:.74rem;letter-spacing:.1em}
+
+  /* ---- 문항 ---- */
+  .prog{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+  .prog .label{font-size:.78rem;color:var(--mut);letter-spacing:.08em;white-space:nowrap}
+  .thresh{flex:1;height:2px;background:var(--line);border-radius:2px;position:relative;overflow:hidden}
+  .thresh i{position:absolute;left:0;top:0;bottom:0;background:var(--indigo);border-radius:2px;transition:width .5s ease}
+  .axis-tag{font-size:.72rem;color:var(--mut);letter-spacing:.24em;margin-bottom:26px}
+  h2.q{font-family:var(--serif);font-weight:700;font-size:clamp(1.35rem,5.4vw,1.7rem);line-height:1.55;margin-bottom:36px}
+  .opts{display:flex;flex-direction:column;gap:14px}
+  .opt{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px;text-align:left;font-family:var(--serif);font-size:1.02rem;line-height:1.7;color:var(--ink);transition:border-color .2s,transform .15s}
+  .opt:hover{border-color:var(--mut)}
+  .opt:active{transform:scale(.985)}
+  .backline{margin-top:34px}
+  .back{background:none;border:none;color:var(--mut);font-size:.82rem;letter-spacing:.04em;padding:6px 0}
+  .back:hover{color:var(--ink-soft)}
+
+  /* ---- 결과 ---- */
+  .result{padding:72px 0 60px;justify-content:flex-start}
+  .axis-chips{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+  .axis-chips span{font-size:.78rem;color:var(--ink-soft);border:1px solid var(--line);background:var(--card);border-radius:100px;padding:5px 14px;letter-spacing:.04em}
+  h2.tname{font-family:var(--disp);font-weight:400;font-size:clamp(1.9rem,8vw,2.7rem);line-height:1.3;letter-spacing:-.01em}
+  .oneline{font-family:var(--serif);font-size:1.08rem;color:var(--ink-soft);margin-top:16px}
+  .desc{font-family:var(--serif);font-size:1rem;color:var(--ink-soft);line-height:1.95;margin-top:30px}
+  .traits{margin-top:30px;border-top:1px solid var(--line);padding-top:24px}
+  .traits .t{display:flex;gap:12px;padding:7px 0;font-size:.92rem;color:var(--ink-soft)}
+  .traits .t::before{content:"○";color:var(--mut);flex:none}
+
+  .divider{display:flex;justify-content:center;align-items:center;gap:54px;height:96px;margin:44px 0 8px}
+  .divider span{width:1.5px;height:100%;background:linear-gradient(var(--ink) 0%,var(--line) 100%)}
+  .divider .cross{width:52px;height:4px;border-radius:4px;background:var(--indigo);margin:0 -54px;z-index:1;height:4px}
+
+  .poemcard{background:linear-gradient(160deg,#FBF8F1,#F1EADB);border:1px solid var(--line);border-radius:22px;padding:34px 30px;margin-top:16px;text-align:center}
+  .poemcard .cap{font-size:.72rem;color:var(--mut);letter-spacing:.2em;margin-bottom:6px}
+  .vpoem{writing-mode:vertical-rl;font-family:var(--serif);font-size:1.14rem;line-height:2.3;letter-spacing:.1em;color:var(--ink);margin:22px auto 18px;max-height:230px;display:inline-block}
+  .poemcard .by{font-size:.82rem;color:var(--mut)}
+  .poemcard .by b{color:var(--ink-soft);font-weight:400}
+
+  .pairs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px}
+  .pair{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 18px}
+  .pair .pl{font-size:.7rem;color:var(--mut);letter-spacing:.18em;margin-bottom:8px}
+  .pair .pn{font-family:var(--serif);font-size:.95rem;line-height:1.5;color:var(--ink)}
+
+  .share{display:flex;flex-direction:column;gap:12px;margin-top:44px}
+  .share .btn{width:100%;padding:16px}
+  .retry{background:none;border:none;color:var(--mut);font-size:.84rem;margin-top:24px;align-self:center;padding:6px}
+  .retry:hover{color:var(--ink-soft)}
+  .toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);font-size:.85rem;padding:12px 22px;border-radius:100px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:50}
+  .toast.on{opacity:1;transform:translateX(-50%)}
+
+  .foot{margin-top:64px;border-top:1px solid var(--line);padding-top:36px;text-align:center}
+  .foot .fm{font-family:var(--disp);font-size:1.7rem;letter-spacing:.06em}
+  .foot .fm i{display:inline-block;width:22px;height:4px;border-radius:4px;background:var(--indigo);margin:0 8px;vertical-align:middle}
+  .foot p{color:var(--mut);font-size:.82rem;margin-top:12px}
+
+  @media(max-width:400px){.pairs{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+<g id="doors">
+  <rect x="20" y="22" width="27" height="60" rx="5" fill="none" stroke="currentColor" stroke-width="4.5"/>
+  <rect x="53" y="22" width="27" height="60" rx="5" fill="none" stroke="currentColor" stroke-width="4.5"/>
+  <line x1="27.5" y1="39" x2="39.5" y2="39" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
+  <line x1="27.5" y1="66" x2="39.5" y2="66" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
+  <line x1="60.5" y1="39" x2="72.5" y2="39" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
+  <line x1="60.5" y1="66" x2="72.5" y2="66" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
+</g>
+</defs></svg>
+
+<!-- 표지 -->
+<section class="screen cover on" id="sc-cover">
+  <div class="wrap">
+    <svg class="cover-symbol" viewBox="0 0 100 100" aria-label="문문 심볼" style="color:#232019">
+      <use href="#doors"/><line x1="41" y1="52" x2="59" y2="52" stroke="#35576C" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+    <p class="eyebrow">문문 시 유형 테스트</p>
+    <h1 class="title">여덟 개의 문,<br>당신의 문은<br>어느 쪽인가요</h1>
+    <p class="tagline">시를 쓰는 사람에게도, 읽는 사람에게도 저마다 드나드는 문이 있어요. 아홉 번의 물음으로 당신의 문을 찾아 드릴게요.</p>
+    <p class="sub">3분이면 충분해요. 재촉하지 않을게요.</p>
+    <button class="btn pri" id="start">첫 문을 밀어볼까요</button>
+    <p class="meta">文門 · MUNMUN</p>
+  </div>
+</section>
+
+<!-- 문항 -->
+<section class="screen" id="sc-q">
+  <div class="wrap">
+    <div class="prog">
+      <span class="label" id="prog-label">첫째 문</span>
+      <div class="thresh"><i id="prog-bar" style="width:0%"></i></div>
+    </div>
+    <p class="axis-tag" id="axis-tag"></p>
+    <h2 class="q" id="q-text"></h2>
+    <div class="opts">
+      <button class="opt" id="opt-a"></button>
+      <button class="opt" id="opt-b"></button>
+    </div>
+    <div class="backline"><button class="back" id="back">← 이전 문으로</button></div>
+  </div>
+</section>
+
+<!-- 결과 -->
+<section class="screen result" id="sc-r">
+  <div class="wrap">
+    <p class="eyebrow" id="r-eyebrow">당신의 문</p>
+    <div class="axis-chips" id="r-chips"></div>
+    <h2 class="tname" id="r-name"></h2>
+    <p class="oneline" id="r-one"></p>
+    <p class="desc" id="r-desc"></p>
+    <div class="traits" id="r-traits"></div>
+
+    <div class="divider" aria-hidden="true"><span></span><div class="cross"></div><span></span></div>
+
+    <div class="poemcard">
+      <p class="cap">이 문 앞에 건네는 시</p>
+      <div class="vpoem" id="r-poem"></div>
+      <p class="by" id="r-poet"></p>
+    </div>
+
+    <div class="pairs">
+      <div class="pair"><p class="pl">나란한 문</p><p class="pn" id="r-friend"></p></div>
+      <div class="pair"><p class="pl">마주 보는 문</p><p class="pn" id="r-mirror"></p></div>
+    </div>
+
+    <div class="share">
+      <button class="btn pri" id="go-test" style="display:none">나의 문도 찾아보기</button>
+      <button class="btn pri" id="save">결과 이미지 저장하기</button>
+      <button class="btn" id="copy">테스트 링크 복사하기</button>
+    </div>
+    <button class="retry" id="retry">다른 문으로 다시 들어가 보기</button>
+
+    <div class="foot">
+      <div class="fm">문<i></i>문</div>
+      <p>매주 일요일, 당신에게 어울리는 시 한 편이 편지로 도착해요.</p>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+<canvas id="cv" width="1080" height="1350" style="display:none"></canvas>
+
+<script>
+const AXES = [
+  {key:"sight", a:"바깥", b:"안"},
+  {key:"lang",  a:"여백", b:"밀도"},
+  {key:"heart", a:"간직", b:"건넴"}
+];
+
+const QUESTIONS = [
+  {ax:0, tag:"시선의 문", q:"마음이 처음 움직이는 순간은 언제인가요?",
+   a:"길에서 낯선 풍경과 마주쳤을 때", b:"어떤 문장이 마음속을 자꾸 맴돌 때"},
+  {ax:1, tag:"언어의 문", q:"오래 좋아하게 되는 시는 어느 쪽인가요?",
+   a:"짧은데, 이상하게 오래 남는 시", b:"길고 깊어서 몇 번이고 다시 읽는 시"},
+  {ax:2, tag:"마음의 문", q:"좋은 문장을 만나면 어떻게 하나요?",
+   a:"나만 아는 비밀처럼 아껴 둬요", b:"곧장 누군가에게 건네요. \u201c이것 좀 읽어 봐\u201d"},
+  {ax:0, tag:"시선의 문", q:"버스 창가에 앉으면 나는,",
+   a:"지나가는 간판과 사람들을 읽고 있어요", b:"어느새 딴생각의 문을 열고 있어요"},
+  {ax:1, tag:"언어의 문", q:"마음을 표현해야 한다면,",
+   a:"한 단어를 오래 고르는 편이에요", b:"여러 문장으로 겹겹이 감싸는 편이에요"},
+  {ax:2, tag:"마음의 문", q:"시를 읽고 쓰는 이유를 하나만 고른다면,",
+   a:"나를 조금 더 이해하고 싶어서", b:"누군가와 닿고 싶어서"},
+  {ax:0, tag:"시선의 문", q:"오래 기억에 남는 건 어느 쪽인가요?",
+   a:"그날의 빛, 냄새, 장면 같은 것", b:"그때 내 마음이 출렁이던 방식"},
+  {ax:1, tag:"언어의 문", q:"문장을 다듬을 때 나는,",
+   a:"자꾸 덜어내요. 여백이 말하게 두고 싶어서", b:"자꾸 보태요. 결이 촘촘해질 때까지"},
+  {ax:2, tag:"마음의 문", q:"다 쓴 글, 혹은 아껴 둔 시 한 편은,",
+   a:"서랍에 넣어 두고 가끔 혼자 꺼내 봐요", b:"보여 주고 싶어 자꾸 손이 근질거려요"}
+];
+
+/* code: 시선(a=바깥/b=안) + 언어(a=여백/b=밀도) + 마음(a=간직/b=건넴) */
+const TYPES = {
+  aaa:{name:"새벽 문가의 사람", one:"세상을 조용히 주워 담아, 혼자 오래 들여다보는 사람",
+    desc:"당신의 시는 바깥에서 옵니다. 이른 빛, 지나가는 우산, 계절이 바뀌는 냄새 같은 것들. 당신은 그걸 크게 말하지 않고, 가장 가벼운 말 몇 개로 접어 서랍에 넣어 둡니다. 서랍 속에서 오래 익은 문장이 어느 날 문득, 시가 됩니다.",
+    traits:["아무도 못 본 장면을 자주 봅니다","말수는 적지만 기억력은 깁니다","좋은 건 아껴 두는 버릇이 있습니다"],
+    poem:["산에는 꽃 피네","꽃이 피네","갈 봄 여름 없이","꽃이 피네"], poet:"김소월", title:"산유화",
+    friend:"aab", mirror:"bbb"},
+  aab:{name:"문을 반쯤 열어두는 사람", one:"본 것을 가볍게 덜어내어, 지나가는 이에게 건네는 사람",
+    desc:"당신은 풍경을 오래 붙잡지 않아요. 좋은 장면을 만나면 짧게 접어, 반쯤 열린 문틈으로 슬며시 내밀죠. 받는 사람이 부담스럽지 않을 만큼만. 그 가벼움이 당신 문장의 힘입니다.",
+    traits:["\u201c이거 너 생각나서\u201d를 자주 말합니다","무겁지 않게 마음을 전할 줄 압니다","짧은 말로 긴 여운을 남깁니다"],
+    poem:["얼굴 하나야","손바닥 둘로","폭 가리지만"], poet:"정지용", title:"호수 1",
+    friend:"aaa", mirror:"bba"},
+  aba:{name:"문간에 계절을 쌓는 사람", one:"세상의 결을 촘촘히 옮겨 적어, 문간에 차곡차곡 쌓아 두는 사람",
+    desc:"당신은 그냥 지나치는 법이 없습니다. 칠월의 볕, 골목의 소리, 식탁 위의 사물까지 촘촘히 받아 적죠. 그 기록은 아직 누구에게도 보여 준 적 없지만, 문간에 쌓인 계절만으로 이미 한 채의 집입니다.",
+    traits:["관찰 일기가 어울리는 사람입니다","사물의 이름을 정확히 부르고 싶어 합니다","보여 주지 않은 글이 가장 많습니다"],
+    poem:["내 고장 칠월은","청포도가","익어 가는 시절"], poet:"이육사", title:"청포도",
+    friend:"abb", mirror:"bab"},
+  abb:{name:"대문을 활짝 여는 사람", one:"세상을 향해 성큼 걸어 나가, 크게 소리 내어 읽는 사람",
+    desc:"당신의 문장은 방 안에 머물지 않습니다. 본 것과 겪은 것을 겹겹이 쌓아 올려, 대문을 열고 광장으로 나가죠. 당신이 쓰면 누군가는 반드시 듣게 됩니다. 그게 당신이 쓰는 이유이기도 하고요.",
+    traits:["낭독이 어울리는 목소리를 가졌습니다","글에 체온과 부피가 있습니다","함께 읽을 사람을 늘 찾고 있습니다"],
+    poem:["그날이 오면","그날이 오면은"], poet:"심훈", title:"그날이 오면",
+    friend:"aba", mirror:"baa"},
+  baa:{name:"문지방에 오래 앉는 사람", one:"마음의 문 앞에서, 가장 정직한 한 줄을 기다리는 사람",
+    desc:"당신의 시는 안쪽에서 옵니다. 서둘러 열지 않고, 문지방에 앉아 마음이 스스로 말을 걸 때까지 기다리죠. 그렇게 얻은 한 줄은 짧지만, 부끄러움이 없습니다. 당신은 이미 알고 있어요 — 기다림도 쓰는 일이라는 걸.",
+    traits:["스스로에게 정직한 편입니다","빈 페이지를 두려워하지 않습니다","느리지만 방향을 잃지 않습니다"],
+    poem:["죽는 날까지","하늘을 우러러","한 점 부끄럼이","없기를"], poet:"윤동주", title:"서시",
+    friend:"bab", mirror:"abb"},
+  bab:{name:"쪽문으로 편지를 미는 사람", one:"속삭이듯 짧게 접은 마음을, 조용히 건네는 사람",
+    desc:"당신은 큰 소리를 내지 않습니다. 마음을 아주 작게 접어, 쪽문 밑으로 살며시 밀어 넣죠. 받은 사람만 아는 온기. 당신의 문장은 늘 한 사람을 향해 있고, 그래서 오래 남습니다.",
+    traits:["긴 안부보다 짧은 쪽지가 편합니다","한 사람을 향해 쓸 때 가장 좋습니다","다정함을 들키는 걸 조금 부끄러워합니다"],
+    poem:["돌담에 속삭이는","햇발같이","풀 아래 웃음 짓는","샘물같이"], poet:"김영랑", title:"돌담에 속삭이는 햇발",
+    friend:"baa", mirror:"aba"},
+  bba:{name:"문 안쪽에 서재를 짓는 사람", one:"마음속 방을 겹겹이 지어, 그 안을 홀로 걷는 사람",
+    desc:"당신의 안쪽에는 남들이 모르는 서재가 있습니다. 문장을 쌓아 벽을 세우고, 그 벽 사이를 혼자 오래 걷죠. 이상하고 아름다운 방들. 언젠가 그 문이 열리는 날, 사람들은 놀랄 겁니다.",
+    traits:["생각의 밀도가 높은 편입니다","혼자 있는 시간이 곧 재료입니다","남들과 조금 다른 각도를 가졌습니다"],
+    poem:["거울속에는","소리가 없소","저렇게까지 조용한","세상은 참 없을 것이오"], poet:"이상", title:"거울",
+    friend:"bbb", mirror:"aab"},
+  bbb:{name:"밤새 문을 두드리는 사람", one:"마음 깊은 곳의 말을, 닿을 때까지 두드리는 사람",
+    desc:"당신에게 쓴다는 건 두드리는 일입니다. 그리움이든 물음이든, 마음 깊은 곳에서 길어 올린 말을 겹겹이 쌓아 누군가의 문 앞에 서죠. 밤새 두드려도 지치지 않는 사람. 당신의 시는 결국, 닿습니다.",
+    traits:["마음의 진폭이 큰 사람입니다","사랑과 상실을 오래 들여다봅니다","전하고 싶은 말이 늘 남아 있습니다"],
+    poem:["님은 갔습니다","아아","사랑하는 나의 님은","갔습니다"], poet:"한용운", title:"님의 침묵",
+    friend:"bba", mirror:"aaa"},
+};
+
+const ORD = ["첫째 문","둘째 문","셋째 문","넷째 문","다섯째 문","여섯째 문","일곱째 문","여덟째 문","아홉째 문"];
+let step = 0;
+let answers = [];
+
+const $ = id => document.getElementById(id);
+const show = id => {
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
+  $(id).classList.add("on");
+  window.scrollTo({top:0});
+};
+
+function renderQ(){
+  const q = QUESTIONS[step];
+  $("prog-label").textContent = ORD[step];
+  $("prog-bar").style.width = (step/QUESTIONS.length*100) + "%";
+  $("axis-tag").textContent = q.tag;
+  $("q-text").textContent = q.q;
+  $("opt-a").textContent = q.a;
+  $("opt-b").textContent = q.b;
+  $("back").style.visibility = step===0 ? "hidden" : "visible";
+}
+
+function answer(v){
+  answers[step] = v;
+  step++;
+  if(step < QUESTIONS.length){ renderQ(); }
+  else { finish(); }
+}
+
+function finish(){
+  const score = [0,0,0]; // b 득표
+  QUESTIONS.forEach((q,i)=>{ if(answers[i]==="b") score[q.ax]++; });
+  const code = score.map(s=> s>=2 ? "b" : "a").join("");
+  renderResult(code);
+  try{ history.replaceState(null, "", "?door=" + code); }catch(e){}
+  $("r-eyebrow").textContent = "당신의 문";
+  $("go-test").style.display = "none";
+  $("save").classList.add("pri");
+  show("sc-r");
+}
+
+let current = null;
+function renderResult(code){
+  const t = TYPES[code];
+  current = {code, ...t};
+  const chips = code.split("").map((c,i)=> AXES[i][c]);
+  $("r-chips").innerHTML = chips.map(c=>`<span>${c}</span>`).join("");
+  $("r-name").textContent = t.name;
+  $("r-one").textContent = t.one;
+  $("r-desc").textContent = t.desc;
+  $("r-traits").innerHTML = t.traits.map(x=>`<div class="t">${x}</div>`).join("");
+  $("r-poem").innerHTML = t.poem.join("<br>");
+  $("r-poet").innerHTML = `${t.poet} · \u300c${t.title}\u300d 중에서`;
+  $("r-friend").textContent = TYPES[t.friend].name;
+  $("r-mirror").textContent = TYPES[t.mirror].name;
+}
+
+$("start").addEventListener("click", ()=>{ step=0; answers=[]; renderQ(); show("sc-q"); });
+$("opt-a").addEventListener("click", ()=>answer("a"));
+$("opt-b").addEventListener("click", ()=>answer("b"));
+$("back").addEventListener("click", ()=>{ if(step>0){ step--; renderQ(); } });
+$("retry").addEventListener("click", ()=>{ step=0; answers=[]; renderQ(); show("sc-q"); });
+
+function toast(msg){
+  const el = $("toast"); el.textContent = msg; el.classList.add("on");
+  clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove("on"), 2200);
+}
+
+$("copy").addEventListener("click", async ()=>{
+  try{ await navigator.clipboard.writeText(shareUrl()); toast("링크를 복사했어요. 조용히 건네 보세요."); }
+  catch(e){ toast("복사가 어려운 환경이에요. 주소창의 링크를 이용해 주세요."); }
+});
+
+/* ---- 결과 카드 (1080x1350, 인스타 4:5) ---- */
+function drawDoors(ctx, x, y, s, ink, indigo){
+  // s = 전체 폭 기준 스케일 (viewBox 100 기준)
+  const u = s/100;
+  ctx.save(); ctx.translate(x,y);
+  ctx.lineCap = "round"; ctx.strokeStyle = ink;
+  ctx.lineWidth = 4.5*u;
+  roundRect(ctx, 20*u, 22*u, 27*u, 60*u, 5*u); ctx.stroke();
+  roundRect(ctx, 53*u, 22*u, 27*u, 60*u, 5*u); ctx.stroke();
+  ctx.lineWidth = 3.4*u;
+  line(ctx, 27.5*u,39*u, 39.5*u,39*u); line(ctx, 27.5*u,66*u, 39.5*u,66*u);
+  line(ctx, 60.5*u,39*u, 72.5*u,39*u); line(ctx, 60.5*u,66*u, 72.5*u,66*u);
+  ctx.strokeStyle = indigo; ctx.lineWidth = 5*u;
+  line(ctx, 41*u,52*u, 59*u,52*u);
+  ctx.restore();
+}
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function line(ctx,x1,y1,x2,y2){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
+
+async function makeCard(){
+  await document.fonts.load('400 84px "Song Myung"');
+  await document.fonts.load('400 40px "Gowun Batang"');
+  await document.fonts.ready;
+  const cv = $("cv"), ctx = cv.getContext("2d");
+  const W=1080, H=1350;
+  ctx.fillStyle = "#F1ECE1"; ctx.fillRect(0,0,W,H);
+
+  // 문설주 세로선
+  ctx.strokeStyle = "#D8CFBE"; ctx.lineWidth = 2;
+  line(ctx, 120, 0, 120, 430); line(ctx, 960, 0, 960, 430);
+
+  drawDoors(ctx, W/2-70, 96, 140, "#232019", "#35576C");
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#8A8375";
+  ctx.font = '600 26px Pretendard, sans-serif';
+  ctx.fillText("문 문   시   유 형   테 스 트", W/2, 320);
+
+  // 축 칩
+  ctx.font = '400 30px "Gowun Batang", serif';
+  ctx.fillStyle = "#4A4438";
+  const chips = current.code.split("").map((c,i)=>AXES[i][c]).join("  ·  ");
+  ctx.fillText(chips, W/2, 400);
+
+  // 유형명 (두 줄 처리)
+  ctx.fillStyle = "#232019";
+  ctx.font = '400 84px "Song Myung", serif';
+  const nm = current.name;
+  if(ctx.measureText(nm).width > 920){
+    const mid = nm.lastIndexOf(" ", Math.floor(nm.length/2)+2);
+    ctx.fillText(nm.slice(0,mid), W/2, 530);
+    ctx.fillText(nm.slice(mid+1), W/2, 640);
+  } else {
+    ctx.fillText(nm, W/2, 560);
+  }
+
+  ctx.fillStyle = "#4A4438";
+  ctx.font = '400 34px "Gowun Batang", serif';
+  wrapText(ctx, current.one, W/2, 740, 860, 56);
+
+  // 문지방 디바이더
+  ctx.strokeStyle = "#232019"; ctx.lineWidth = 2;
+  line(ctx, W/2-90, 850, W/2-90, 950); line(ctx, W/2+90, 850, W/2+90, 950);
+  ctx.strokeStyle = "#35576C"; ctx.lineWidth = 6; ctx.lineCap="round";
+  line(ctx, W/2-42, 900, W/2+42, 900);
+
+  // 시 인용
+  ctx.fillStyle = "#232019";
+  ctx.font = '400 36px "Gowun Batang", serif';
+  const pl = current.poem.join("  ");
+  wrapText(ctx, pl, W/2, 1030, 800, 62);
+  ctx.fillStyle = "#8A8375";
+  ctx.font = '400 26px "Gowun Batang", serif';
+  ctx.fillText(`${current.poet} · \u300c${current.title}\u300d 중에서`, W/2, 1160);
+
+  ctx.fillStyle = "#8A8375";
+  ctx.font = '400 24px Pretendard, sans-serif';
+  ctx.fillText("당신에게 열리는 시 한 편  ·  文門 문문", W/2, 1270);
+  return cv;
+}
+function wrapText(ctx, text, x, y, maxW, lh){
+  const words = text.split(" ");
+  let lineTxt = "", yy = y;
+  for(const w of words){
+    const t = lineTxt ? lineTxt+" "+w : w;
+    if(ctx.measureText(t).width > maxW && lineTxt){ ctx.fillText(lineTxt, x, yy); lineTxt = w; yy += lh; }
+    else lineTxt = t;
+  }
+  if(lineTxt) ctx.fillText(lineTxt, x, yy);
+}
+
+function shareUrl(){
+  const u = new URL(location.href);
+  u.search = current ? "?door=" + current.code : "";
+  u.hash = "";
+  return u.toString();
+}
+
+/* ---- 딥링크: ?door=aaa ~ bbb ---- */
+$("go-test").addEventListener("click", ()=>{
+  step=0; answers=[];
+  try{ history.replaceState(null, "", location.pathname); }catch(e){}
+  renderQ(); show("sc-q");
+});
+(function(){
+  const c = new URLSearchParams(location.search).get("door");
+  if(c && TYPES[c]){
+    renderResult(c);
+    $("r-eyebrow").textContent = "누군가 건넨 문";
+    $("go-test").style.display = "";
+    $("save").classList.remove("pri"); /* 화면당 쪽빛 강조는 하나만 */
+    show("sc-r");
+  }
+})();
+
+$("save").addEventListener("click", async ()=>{
+  if(!current) return;
+  toast("이미지를 준비하고 있어요…");
+  const cv = await makeCard();
+  cv.toBlob(async blob=>{
+    const file = new File([blob], "munmun-type.png", {type:"image/png"});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      try{ await navigator.share({files:[file], title:"여덟 개의 문 · 문문"}); return; }catch(e){}
+    }
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "munmun-type.png"; a.click();
+    URL.revokeObjectURL(a.href);
+    toast("이미지를 저장했어요.");
+  }, "image/png");
+});
+</script>
+</body>
+</html>

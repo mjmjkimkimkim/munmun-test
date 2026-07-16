@@ -296,6 +296,15 @@ let answers = [];
 const COUNTER_BASE = "https://countapi.mileshilliard.com/api/v1";
 const COUNTER_PREFIX = "munmun_door_test_v1_";
 
+/* ---- 방문 집계 (세션당 1회, 익명 숫자만 — 유입 대비 완주 전환율 확인용) ---- */
+(function(){
+  try{
+    if(sessionStorage.getItem("munmun_visited")) return;
+    sessionStorage.setItem("munmun_visited", "1");
+  }catch(e){}
+  fetch(`${COUNTER_BASE}/hit/${COUNTER_PREFIX}visits`).catch(()=>{});
+})();
+
 async function bumpDoorCount(code){
   try{ await fetch(`${COUNTER_BASE}/hit/${COUNTER_PREFIX}${code}`); }catch(e){}
 }
